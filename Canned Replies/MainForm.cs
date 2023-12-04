@@ -13,13 +13,12 @@ using System.Xml.Serialization;
 
 namespace Canned_Replies
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        List<Reply> Replies;
+        private List<Reply> _replies;
         string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Canned Replies";
-            
-
-        public Form1()
+        private bool _loading = false;
+        public MainForm()
         {
             InitializeComponent();
             LoadReplies();
@@ -32,7 +31,7 @@ namespace Canned_Replies
             var formAdd = new FormAdd(newReply);
             if (formAdd.ShowDialog() == DialogResult.OK)
             {
-                Replies.Add(newReply);
+                _replies.Add(newReply);
                 PopulateForm();
                 listBox.SelectedIndex = listBox.Items.Count - 1;
                 SaveReplies();
@@ -66,14 +65,25 @@ namespace Canned_Replies
             }
             else
             {
-                XmlSerializer reader = new XmlSerializer(typeof(List<Reply>));
-      
-                using (StreamReader file = new StreamReader(appDataFolder + @"\Replies.xml"))
-                {
-                    Replies = (List<Reply>)reader.Deserialize(file);
-                }
+                _loading = true;
 
+                try
+                {
+                    XmlSerializer reader = new XmlSerializer(typeof(SaveData));
+      
+                    using (StreamReader file = new StreamReader(appDataFolder + @"\Replies.xml"))
+                    {
+                        var saveData = (SaveData)reader.Deserialize(file);
+                        _replies = saveData.Replies;
+                        cbMinimize.Checked = saveData.Minimize;
+                    }
+                }
+                catch
+                {
+                    MakeNewFile();
+                }
             }
+            _loading = false;
             PopulateForm();
         }
 
@@ -81,7 +91,7 @@ namespace Canned_Replies
         {
             listBox.Items.Clear();
             textBox.Text = "";
-            foreach (var reply in Replies)
+            foreach (var reply in _replies)
             {
                 listBox.Items.Add(reply);
             }
@@ -89,7 +99,7 @@ namespace Canned_Replies
 
         private void MakeNewFile()
         {
-                Replies = new List<Reply>() {
+                _replies = new List<Reply>() {
                 new Reply() { name = "Out of stock", replyText = "Hi" + Environment.NewLine + Environment.NewLine +
                     "Unfortunately we have oversold on this item." + Environment.NewLine + Environment.NewLine +
                     "name"}
@@ -104,11 +114,17 @@ namespace Canned_Replies
             XmlWriterSettings writerSettings = new XmlWriterSettings();
             writerSettings.NewLineHandling = NewLineHandling.Entitize;
 
-            XmlSerializer writer = new XmlSerializer(Replies.GetType());
+            XmlSerializer writer = new XmlSerializer(typeof(SaveData));
 
             using (XmlWriter file = XmlWriter.Create(appDataFolder + @"\Replies.xml", writerSettings))
             {
-                writer.Serialize(file, Replies);
+                var saveData = new SaveData
+                {
+                    Replies = _replies,
+                    Minimize = cbMinimize.Checked
+                };
+
+                writer.Serialize(file, saveData);
             }
         }
 
@@ -125,7 +141,7 @@ namespace Canned_Replies
                 "Are you sure?",
                 MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
             {
-                Replies.Remove((Reply)listBox.SelectedItem);
+                _replies.Remove((Reply)listBox.SelectedItem);
                 PopulateForm();
                 SaveReplies();
             }
@@ -141,8 +157,22 @@ namespace Canned_Replies
             if (!String.IsNullOrWhiteSpace(textBox.Text))
             {
                 Clipboard.SetText(textBox.Text);
-                this.WindowState = FormWindowState.Minimized;
+                if(cbMinimize.Checked)
+                    this.WindowState = FormWindowState.Minimized;
             }
         }
+
+        private void cbMinimize_CheckedChanged(object sender, EventArgs e)
+        {
+            if(_loading)
+                return;
+            SaveReplies();
+        }
+    }
+
+    public class SaveData
+    {
+        public List<Reply> Replies { get; set; }
+        public bool Minimize { get; set; }
     }
 }

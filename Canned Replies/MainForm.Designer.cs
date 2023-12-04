@@ -1,6 +1,6 @@
 ﻿namespace Canned_Replies
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -34,6 +34,7 @@
             this.deleteButton = new System.Windows.Forms.Button();
             this.copyButton = new System.Windows.Forms.Button();
             this.addButton = new System.Windows.Forms.Button();
+            this.cbMinimize = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // listBox
@@ -61,7 +62,7 @@
             // 
             // editButton
             // 
-            this.editButton.Location = new System.Drawing.Point(292, 439);
+            this.editButton.Location = new System.Drawing.Point(252, 439);
             this.editButton.Name = "editButton";
             this.editButton.Size = new System.Drawing.Size(75, 23);
             this.editButton.TabIndex = 2;
@@ -71,7 +72,7 @@
             // 
             // deleteButton
             // 
-            this.deleteButton.Location = new System.Drawing.Point(373, 439);
+            this.deleteButton.Location = new System.Drawing.Point(333, 439);
             this.deleteButton.Name = "deleteButton";
             this.deleteButton.Size = new System.Drawing.Size(75, 23);
             this.deleteButton.TabIndex = 3;
@@ -85,13 +86,13 @@
             this.copyButton.Name = "copyButton";
             this.copyButton.Size = new System.Drawing.Size(357, 49);
             this.copyButton.TabIndex = 4;
-            this.copyButton.Text = "&Copy to clipboard";
+            this.copyButton.Text = "&Copy to clipboard (or double click a reply)";
             this.copyButton.UseVisualStyleBackColor = true;
             this.copyButton.Click += new System.EventHandler(this.copyButton_Click);
             // 
             // addButton
             // 
-            this.addButton.Location = new System.Drawing.Point(454, 439);
+            this.addButton.Location = new System.Drawing.Point(414, 439);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(75, 23);
             this.addButton.TabIndex = 5;
@@ -99,12 +100,26 @@
             this.addButton.UseVisualStyleBackColor = true;
             this.addButton.Click += new System.EventHandler(this.addButton_Click);
             // 
-            // Form1
+            // cbMinimize
+            // 
+            this.cbMinimize.AutoSize = true;
+            this.cbMinimize.Checked = true;
+            this.cbMinimize.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbMinimize.Location = new System.Drawing.Point(527, 443);
+            this.cbMinimize.Name = "cbMinimize";
+            this.cbMinimize.Size = new System.Drawing.Size(66, 17);
+            this.cbMinimize.TabIndex = 6;
+            this.cbMinimize.Text = "Minimize";
+            this.cbMinimize.UseVisualStyleBackColor = true;
+            this.cbMinimize.CheckedChanged += new System.EventHandler(this.cbMinimize_CheckedChanged);
+            // 
+            // MainForm
             // 
             this.AcceptButton = this.copyButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 529);
+            this.Controls.Add(this.cbMinimize);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.copyButton);
             this.Controls.Add(this.deleteButton);
@@ -113,7 +128,7 @@
             this.Controls.Add(this.listBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Canned Replies";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -128,6 +143,7 @@
         private System.Windows.Forms.Button deleteButton;
         private System.Windows.Forms.Button copyButton;
         private System.Windows.Forms.Button addButton;
+        private System.Windows.Forms.CheckBox cbMinimize;
     }
 }
 
